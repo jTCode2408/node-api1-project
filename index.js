@@ -28,12 +28,10 @@ server.post('/api/users', (req,res)=>{
     .then(user=>{
         console.log(userData);
         if (userData.name && userData.bio) {
-        res.status(201).json(userData)
+        res.status(201).json({user, userData})
 } else {
-
     res.status(400).json({errorMessage: "Please provide name and bio for the user." })
 }
-  
 })
 .catch(err => {
     res.status(500).json({ errorMessage: "There was an error while saving the user to the database"});
