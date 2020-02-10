@@ -3,8 +3,6 @@ const express = require('express'); //import express
 const Users = require('./data/db'); //var for users data 
 const server=express();
 server.use(express.json());
-
-
 server.get('/', (req,res)=>{
     res.json({start:'Initial Server Start'})
 })
@@ -20,7 +18,6 @@ server.get('/api/users', (req,res)=>{
         res.status(500).json({errorMessage: "The users information could not be retrieved."})
     })
 })
-
 //POST(add user, method called 'insert')
 server.post('/api/users', (req,res)=>{
     const userData = req.body
@@ -99,9 +96,6 @@ server.put('/api/users/:id', (req,res)=>{
         }
     })
 })
-
-
-
 
 const port = 5000;
 server.listen(port, ()=>console.log(`\n** API on port ${port}\n`));
