@@ -43,9 +43,9 @@ server.post('/api/users', (req,res)=>{
 server.get('/api/users/:id', (req,res)=>{
     const {id} = req.params;
     Users.findById(id)
-    .then(user =>{
-        if (user.id !== id){
-        res.status(200).json(user)
+    .then(userId =>{
+        if (userId.id === id){
+        res.status(200).json(userId)
         } else{
             res.status(404).json({errorMessage:"user with specified ID does not exist"})
         }
@@ -56,6 +56,30 @@ server.get('/api/users/:id', (req,res)=>{
 
     })
 })
+
+
+//DELETE(/api/usres/id, remove)
+server.delete('/api/users/:id', (req,res)=>{
+    const {id} = req.params;
+    Users.remove(id)
+    .then(removed =>{
+    res.status(200).json(removed.id);
+        
+    })
+    .catch(err=>{
+    console.log(err);
+    if (removed.id !== id){
+    res.status(404).json({ message: "The user with the specified ID does not exist."})
+    } else{
+    res.status(500).json({errorMessage: "The user could not be removed"})
+}
+
+    })
+
+})
+
+
+
 //PUT.update(): accepts two arguments, the first is the id of the user to update and the second is an object with the changes to apply. It returns the count of updated records. If the count is 1 it means the record was updated correctly.
 
 const port = 5000;
