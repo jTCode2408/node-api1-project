@@ -27,8 +27,13 @@ server.post('/api/users', (req,res)=>{
     Users.insert(userData)
     .then(user=>{
         console.log(userData);
-        if (userData.name && userData.bio) {
-        res.status(201).json({user, userData})
+        if (userData.name || userData.bio) {
+        res.status(201).json({
+            name:userData.name,
+            bio:userData.bio,
+            created_at:Date.now(),
+            udpated_at:Date.now()
+        })
 } else {
     res.status(400).json({errorMessage: "Please provide name and bio for the user." })
 }
@@ -41,46 +46,62 @@ server.post('/api/users', (req,res)=>{
 })
 //get user by id(/api/users:id, findById)
 server.get('/api/users/:id', (req,res)=>{
-    const {id} = req.params;
-    Users.findById(id)
+    // const {id} = req.params;
+    Users.findById(req.params.id)
     .then(userId =>{
-        if (userId.id === id){
         res.status(200).json(userId)
-        } else{
-            res.status(404).json({errorMessage:"user with specified ID does not exist"})
-        }
+       
     })
     .catch(err=>{
         console.log(err);
+        if (!id){
+            res.status(404).json({errorMessage:"user with specified ID does not exist"})
+            } else{
+              
         res.status(500).json({errorMessage: "The user information could not be retrieved." });
+            }
 
     })
 })
-
-
 //DELETE(/api/usres/id, remove)
 server.delete('/api/users/:id', (req,res)=>{
-    const {id} = req.params;
-    Users.remove(id)
+    // const {id} = req.params.id;
+    Users.remove(req.params.id)
     .then(removed =>{
-    res.status(200).json(removed.id);
+    res.status(200).json(removed);
         
     })
     .catch(err=>{
     console.log(err);
-    if (removed.id !== id){
+    if (!id){
     res.status(404).json({ message: "The user with the specified ID does not exist."})
     } else{
     res.status(500).json({errorMessage: "The user could not be removed"})
-}
-
+        }
     })
+})
 
+//PUT.update(): accepts two arguments, the first is the id of the user to update and the second is an object with the changes to apply. It returns the count of updated records. If the count is 1 it means the record was updated correctly.
+server.put('/api/users/:id', (req,res)=>{
+    let {name, bio} = req.body
+    Users.update(req.params.id, {name, bio})
+    .then(edited=>{
+        res.status(201).json(edited)
+    })
+    .catch(err=>{
+        console.log(err);
+        if(!id){
+            res.status(404).json({ message: "The user with the specified ID does not exist."})
+        } else if (!name || !bio){
+            res.status(400).json({ message: "Please provide name and bio for the user."})
+        } else{
+            res.status(500).json({ message: "The user information could not be modified."})
+        }
+    })
 })
 
 
 
-//PUT.update(): accepts two arguments, the first is the id of the user to update and the second is an object with the changes to apply. It returns the count of updated records. If the count is 1 it means the record was updated correctly.
 
 const port = 5000;
 server.listen(port, ()=>console.log(`\n** API on port ${port}\n`));
