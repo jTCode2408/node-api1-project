@@ -34,12 +34,29 @@ server.post('/api/users', (req,res)=>{
 }
 })
 .catch(err => {
+    console.log(err);
     res.status(500).json({ errorMessage: "There was an error while saving the user to the database"});
   });
 
 })
+//get user by id(/api/users:id, findById)
+server.get('/api/users/:id', (req,res)=>{
+    const {id} = req.params;
+    Users.findById(id)
+    .then(user =>{
+        if (user.id !== id){
+        res.status(200).json(user)
+        } else{
+            res.status(404).json({errorMessage:"user with specified ID does not exist"})
+        }
+    })
+    .catch(err=>{
+        console.log(err);
+        res.status(500).json({errorMessage: "The user information could not be retrieved." });
 
-
+    })
+})
+//PUT.update(): accepts two arguments, the first is the id of the user to update and the second is an object with the changes to apply. It returns the count of updated records. If the count is 1 it means the record was updated correctly.
 
 const port = 5000;
 server.listen(port, ()=>console.log(`\n** API on port ${port}\n`));
