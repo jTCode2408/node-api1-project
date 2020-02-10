@@ -81,7 +81,7 @@ server.delete('/api/users/:id', (req,res)=>{
     })
 })
 
-//PUT.update(): accepts two arguments, the first is the id of the user to update and the second is an object with the changes to apply. It returns the count of updated records. If the count is 1 it means the record was updated correctly.
+//PUT.update(): accepts two arguments,id of the user to update, & object with the changes to apply.If the count is 1 it means the record was updated correctly.
 server.put('/api/users/:id', (req,res)=>{
     let {name, bio} = req.body
     Users.update(req.params.id, {name, bio})
