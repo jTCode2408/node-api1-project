@@ -58,20 +58,21 @@ server.get('/api/users/:id', (req,res)=>{
 })
 //DELETE(/api/usres/id, remove)
 server.delete('/api/users/:id', (req,res)=>{
-    const {id} = req.params.id;
-    Users.remove(id)
+    // const {id} = req.params.id;
+    Users.remove(req.params.id)
     .then(removed =>{
-        if(removed){
     res.status(200).json(removed);
-        } else{
-         res.status(404).json({ message: "The user with the specified ID does not exist."})
-        }
+     
     })
     .catch(err=>{
     console.log(err);
-    res.status(500).json({errorMessage: "The user could not be removed"})
-        
+    if(!id){
+        res.status(500).json({errorMessage: "The user could not be removed"})  
+    } else {
+    res.status(404).json({ message: "The user with the specified ID does not exist."})
+    }
     })
+
 })
 
 //PUT.update(): accepts two arguments,id of the user to update, & object with the changes to apply.If the count is 1 it means the record was updated correctly.
@@ -96,9 +97,7 @@ server.put('/api/users/:id', (req,res)=>{
             }
             } else{
             res.status(404).json({ errorMessage: "The user with the specified ID does not exist."})
-
             }
-    
     })
 })
 
