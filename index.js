@@ -77,19 +77,28 @@ server.delete('/api/users/:id', (req,res)=>{
 //PUT.update(): accepts two arguments,id of the user to update, & object with the changes to apply.If the count is 1 it means the record was updated correctly.
 server.put('/api/users/:id', (req,res)=>{
     const editData = req.body
-    Users.update(req.params.id, (editData))
-    .then(edited=>{
-        res.status(201).json(edited)
+    const{id} = req.params;
+    Users.findById(id)
+    .then(edited =>{
+        if(edited){
+            if(editData.name && editData.bio){
+        Users.update(id, editData)
+        .then(edited=>{
+        res.status(201).json(editData)
     })
+    
     .catch(err=>{
         console.log(err);
-        if(!id){
-            res.status(404).json({ message: "The user with the specified ID does not exist."})
-        } else if (!editData.name || !editData.bio){
-            res.status(400).json({ message: "Please provide name and bio for the user."})
-        } else{
-            res.status(500).json({ message: "The user information could not be modified."})
-        }
+        res.status(500).json({ message: "The user information could not be modified."})
+    })
+            } else {
+                res.status(400).json({ errorMessage: "Please provide name and bio for the user."})
+            }
+            } else{
+            res.status(404).json({ errorMessage: "The user with the specified ID does not exist."})
+
+            }
+    
     })
 })
 
